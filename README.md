@@ -27,9 +27,9 @@ Plugin for AWS Power State
 
 ## Auto Scaling Group
 
-cloud_service_type: AutoScalingGroup
-cloud_service_group: AutoScaling
-provider: aws
+- cloud_service_type: AutoScalingGroup
+- cloud_service_group: AutoScaling
+- provider: aws
 
 ~~~
 'data': {
@@ -45,9 +45,9 @@ provider: aws
 
 ## RDS
 
-cloud_service_type: Database
-cloud_service_group: RDS
-provider: aws
+- cloud_service_type: Database
+- cloud_service_group: RDS
+- provider: aws
 
 ~~~
 'data': {
