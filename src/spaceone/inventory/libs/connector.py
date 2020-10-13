@@ -123,6 +123,8 @@ class SchematicAWSConnector(AWSConnector):
             for data in collect_resource_info['request_method'](region_name, **collect_resource_info.get('kwargs', {})):
                 resources.append(collect_resource_info['response_schema'](
                     {'resource': collect_resource_info['resource']({'data': data,
+                                                                    'region_type': 'AWS',
+                                                                    'region_code': region_name,
                                                                     'reference': ReferenceModel(data.reference(region_name))})}))
         except Exception as e:
             print(f'[ERROR {service_name}] REGION : {region_name} {e}')

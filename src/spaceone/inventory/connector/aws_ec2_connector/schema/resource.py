@@ -5,6 +5,8 @@ from spaceone.inventory.connector.aws_ec2_connector.schema.data import Server
 
 class ServerResource(Model):
     data = ModelType(Server)
+    region_type = StringType(default="AWS")
+    region_code = StringType()
     reference = ModelType(ReferenceModel)
 
 class ServerResponse(BaseResponse):

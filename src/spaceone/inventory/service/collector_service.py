@@ -1,4 +1,3 @@
-root@fcf150413efd:/usr/local/lib/python3.8/site-packages/plugin_aws_cloudservices-1.0-py3.8.egg/spaceone/inventory/service# more collector_service.py
 import time
 import logging
 import concurrent.futures
@@ -22,6 +21,8 @@ class CollectorService(BaseService):
 
         self.execute_managers = [
             'EC2ConnectorManager',
+            'AutoScalingConnectorManager',
+            'RDSConnectorManager'
         ]
 
     @check_required(['options'])
