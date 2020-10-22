@@ -13,8 +13,7 @@ class Compute(Model):
     account = StringType(deserialize_from="account")
 
 class AWS(Model):
-    instance_status = StringType(deserialize_from='InstanceStatus', choices=('passed', 'failed', 'insufficient-data', 'initializing'), serialize_when_none=False)
-    system_status = StringType(deserialize_from='SystemStatus', choices=('passed', 'failed', 'insufficient-data', 'initializing'), serialize_when_none=False)
+    status = StringType(deserialize_from='PowerStatus', choices=('RUNNING', 'STOPPED', 'UNHEALTHY'), serialize_when_none=False)
 
 class Server(Model):
     compute = ModelType(Compute, deserialize_from="Compute")
@@ -23,6 +22,6 @@ class Server(Model):
     def reference(self, region_code):
         return {
                     "resource_id": self.compute.instance_id,
-                    "external_link": f"https://{region_code}.console.aws.amazon.com/ec2/v2/home?region={region_code}#Instances:{self.compute.instance_id}"
+                    "external_link": f"https://{region_code}.console.aws.amazon.com/ec2/v2/home?region={region_code}#Instances:instanceId={self.compute.instance_id}"
                 }
 

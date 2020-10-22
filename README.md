@@ -11,13 +11,8 @@ Plugin for AWS Power State
 
 ~~~
 "data": {
-	"compute": {
-		"instance_state": "RUNNING",
-			...
-		},
 	"power_state": {
-		"instance_state": "passed",
-		"system_state": "passed"
+		"status": "RUNNING"
 	},
 
 	....

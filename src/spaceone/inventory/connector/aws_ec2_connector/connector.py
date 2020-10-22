@@ -48,8 +48,7 @@ class EC2Connector(SchematicAWSConnector):
             for raw in data.get('InstanceStatuses', []):
                 raw.update({
                     'aws': {
-                        'InstanceStatus': self._get_status(raw['InstanceStatus']),
-                        'SystemStatus': self._get_status(raw['SystemStatus'])
+                        'PowerStatus': self._get_power_status(raw),
                     },
                     'compute': self._get_compute(raw),
                     'instance_id': raw['InstanceId']
@@ -74,8 +73,7 @@ class EC2Connector(SchematicAWSConnector):
                     instance_data = {}
                     instance_data.update({
                         'aws': {
-                            'InstanceStatus': 'passed',
-                            'SystemStatus': 'passed'
+                            'PowerStatus': 'STOPPED'
                         },
                         'compute': self._get_compute2(raw),
                         'instance_id': raw['InstanceId']
@@ -84,6 +82,16 @@ class EC2Connector(SchematicAWSConnector):
                     yield Server(instance_data, strict=False)
 
         print(f"{region_name} ec2: {count}")
+
+    def _get_power_status(self, InstanceStatuses):
+        """ Based on InstanceStatus,
+        possible: RUNNING | UNHEALTHY
+        """
+        ins_status = self._get_status(InstanceStatuses['InstanceStatus'])
+        sys_status = self._get_status(InstanceStatuses['SystemStatus'])
+        if ins_status == 'passed' and sys_status == 'passed':
+            return 'RUNNING'
+        return 'UNHEALTHY'
 
     @staticmethod
     def _get_status(InstanceStatus):
