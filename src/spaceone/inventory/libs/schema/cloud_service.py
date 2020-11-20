@@ -6,6 +6,8 @@ from .base import BaseResponse, ReferenceModel
 class CloudServiceResource(Model):
     provider = StringType(default="aws")
     data = PolyModelType(Model, default=lambda: {})
+    cloud_service_type = StringType()
+    cloud_service_group = StringType()
     reference = ModelType(ReferenceModel)
 
 

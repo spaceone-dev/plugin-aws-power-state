@@ -18,43 +18,79 @@ class RDSManager(AWSPowerStateManager):
             # print(f'[ RDS {region_name} ]')
             rds_conn.set_client(region_name)
 
-            for cluster in rds_conn.describe_db_clusters():
-                cluster = Cluster(cluster, strict=False)
-
-                db = {
-                    'arn': cluster.db_cluster_arn,
-                    'db_identifier': cluster.db_cluster_identifier,
-                    'status': cluster.status,
-                    'role': 'cluster'
-                }
-
-                db_data = Database(db, strict=False)
-
-                rds_resource = RDSResource({
-                    'data': db_data,
-                    'reference': ReferenceModel(db_data.reference())
-                })
-
-                resources.append(RDSResponse({'resource': rds_resource}))
-
-            for instance in rds_conn.describe_db_instances():
-                instance = Instance(instance, strict=False)
-
-                db = {
-                    'arn': instance.db_instance_arn,
-                    'db_identifier': instance.db_instance_identifier,
-                    'status': instance.db_instance_status,
-                    'role': 'instance'
-                }
-
-                db_data = Database(db, strict=False)
-
-                rds_resource = RDSResource({
-                    'data': db_data,
-                    'reference': ReferenceModel(db_data.reference())
-                })
-
-                resources.append(RDSResponse({'resource': rds_resource}))
+            resources.extend(self.get_rds_databases(rds_conn))
+            resources.extend(self.get_rds_instances(rds_conn))
 
         print(f' RDS Finished {time.time() - start_time} Seconds')
         return resources
+
+    def get_rds_databases(self, rds_conn):
+        databases = []
+        for cluster in rds_conn.describe_db_clusters(Filters=self.get_rds_filter()):
+            rds_cluster = {
+                'arn': cluster['DBClusterArn'],
+                'db_identifier': cluster['DBClusterIdentifier'],
+                'status': cluster['Status'],
+                'role': 'cluster'
+            }
+
+            rds_data = RDS(rds_cluster, strict=False)
+
+            rds_resource = RDSDatabaseResource({
+                'data': rds_data,
+                'reference': ReferenceModel(rds_data.reference())
+            })
+
+            databases.append(RDSDatabaseResponse({'resource': rds_resource}))
+
+        for instance in rds_conn.describe_db_instances(Filters=self.get_rds_filter()):
+            if not instance.get('DBClusterIdentifier'):
+                rds_instance = {
+                    'arn': instance['DBInstanceArn'],
+                    'db_identifier': instance['DBInstanceIdentifier'],
+                    'status': instance['DBInstanceStatus'],
+                    'role': 'instance'
+                }
+
+                rds_data = RDS(rds_instance, strict=False)
+
+                rds_resource = RDSDatabaseResource({
+                    'data': rds_data,
+                    'reference': ReferenceModel(rds_data.reference())
+                })
+
+                databases.append(RDSDatabaseResponse({'resource': rds_resource}))
+
+        return databases
+
+    def get_rds_instances(self, rds_conn):
+        instances = []
+        for instance in rds_conn.describe_db_instances(Filters=self.get_rds_filter()):
+            rds = {
+                'arn': instance['DBInstanceArn'],
+                'db_identifier': instance['DBInstanceIdentifier'],
+                'status': instance['DBInstanceStatus'],
+                'role': 'instance'
+            }
+
+            rds_data = RDS(rds, strict=False)
+
+            rds_resource = RDSInstanceResource({
+                'data': rds_data,
+                'reference': ReferenceModel(rds_data.reference())
+            })
+
+            instances.append(RDSInstanceResponse({'resource': rds_resource}))
+
+        return instances
+
+    @staticmethod
+    def get_rds_filter():
+        RDS_FILTER = ['aurora', 'aurora-mysql', 'mysql', 'mariadb', 'postgres',
+                      'oracle-ee', 'oracle-se', 'oracle-se1', 'oracle-se2',
+                      'sqlserver-ex', 'sqlserver-web', 'sqlserver-se', 'sqlserver-ee']
+
+        return [{
+            'Name': 'engine',
+            'Values': RDS_FILTER
+        }]

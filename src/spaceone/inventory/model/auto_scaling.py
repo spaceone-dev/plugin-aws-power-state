@@ -24,6 +24,8 @@ class AutoScalingGroup(Model):
 
 
 class AutoScalingResource(CloudServiceResource):
+    cloud_service_group = StringType(default='EC2')
+    cloud_service_type = StringType(default='AutoScalingGroup')
     data = ModelType(AutoScalingGroup)
 
 

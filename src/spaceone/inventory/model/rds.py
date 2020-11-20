@@ -6,22 +6,8 @@ from spaceone.inventory.libs.schema.cloud_service import CloudServiceResource, C
 
 _LOGGER = logging.getLogger(__name__)
 
-'''
-INSTANCE
-'''
-class Instance(Model):
-    db_instance_identifier = StringType(deserialize_from="DBInstanceIdentifier")
-    db_instance_status = StringType(deserialize_from="DBInstanceStatus")
-    db_instance_arn = StringType(deserialize_from="DBInstanceArn")
 
-
-class Cluster(Model):
-    status = StringType(deserialize_from="Status")
-    db_cluster_arn = StringType(deserialize_from="DBClusterArn")
-    db_cluster_identifier = StringType(deserialize_from="DBClusterIdentifier")
-
-
-class Database(Model):
+class RDS(Model):
     arn = StringType()
     db_identifier = StringType()
     status = StringType()
@@ -34,8 +20,22 @@ class Database(Model):
 
 
 class RDSResource(CloudServiceResource):
-    data = ModelType(Database)
+    cloud_service_group = StringType(default='RDS')
 
 
-class RDSResponse(CloudServiceResponse):
-    resource = ModelType(RDSResource)
+class RDSDatabaseResource(RDSResource):
+    cloud_service_type = StringType(default='Database')
+    data = ModelType(RDS)
+
+
+class RDSInstanceResource(RDSResource):
+    cloud_service_type = StringType(default='Instance')
+    data = ModelType(RDS)
+
+
+class RDSDatabaseResponse(CloudServiceResponse):
+    resource = ModelType(RDSDatabaseResource)
+
+
+class RDSInstanceResponse(CloudServiceResponse):
+    resource = ModelType(RDSInstanceResource)
