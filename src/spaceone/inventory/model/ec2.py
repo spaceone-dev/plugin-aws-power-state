@@ -32,6 +32,8 @@ class Server(Model):
 
 
 class EC2Resource(CloudServiceResource):
+    cloud_service_group = StringType(default='EC2')
+    cloud_service_type = StringType(default='Instance')
     data = ModelType(Server)
 
 
