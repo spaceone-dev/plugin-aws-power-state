@@ -37,6 +37,6 @@ class Collector(BaseAPI, collector_pb2_grpc.CollectorServicer):
                     'resource_type': (resource['resource_type']),
                     'match_rules': change_struct_type(resource['match_rules']),
                     'resource': change_struct_type(resource['resource']),
-                    'options': change_struct_type(resource['options'])
+                    'options': change_struct_type(resource.get('options', {}))
                 }
                 yield self.locator.get_info('ResourceInfo', res)

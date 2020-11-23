@@ -2,14 +2,14 @@ import logging
 
 from schematics import Model
 from schematics.types import ModelType, StringType, IntType, FloatType, DateTimeType, serializable, ListType, \
-    BooleanType
+    BooleanType, PolyModelType
+from spaceone.inventory.libs.schema.cloud_service import CloudServiceResource, CloudServiceResponse
 
 _LOGGER = logging.getLogger(__name__)
 
 '''
 AUTO SCALING GROUPS
 '''
-
 class AutoScalingGroup(Model):
     auto_scaling_group_name = StringType(deserialize_from="AutoScalingGroupName")
     auto_scaling_group_arn = StringType(deserialize_from="AutoScalingGroupARN")
@@ -17,9 +17,17 @@ class AutoScalingGroup(Model):
     max_size = IntType(deserialize_from="MaxSize")
     desired_capacity = IntType(deserialize_from="DesiredCapacity")
 
-    def reference(self, region_code):
+    def reference(self):
         return {
             "resource_id": self.auto_scaling_group_arn,
-            "external_link": f"https://console.aws.amazon.com/ec2/autoscaling/home?region={region_code}#AutoScalingGroups:id={self.auto_scaling_group_name}"
         }
 
+
+class AutoScalingResource(CloudServiceResource):
+    cloud_service_group = StringType(default='EC2')
+    cloud_service_type = StringType(default='AutoScalingGroup')
+    data = ModelType(AutoScalingGroup)
+
+
+class AutoScalingResponse(CloudServiceResponse):
+    resource = ModelType(AutoScalingResource)

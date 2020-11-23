@@ -1,3 +1,4 @@
-from spaceone.inventory.connector.aws_rds_connector.connector import RDSConnector
-from spaceone.inventory.connector.aws_auto_scaling_connector.connector import AutoScalingConnector
-from spaceone.inventory.connector.aws_ec2_connector.connector import EC2Connector
+from spaceone.inventory.connector.auto_scaling import AutoScalingConnector
+from spaceone.inventory.connector.ec2 import EC2Connector
+from spaceone.inventory.connector.rds import RDSConnector
+
