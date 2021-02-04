@@ -33,7 +33,16 @@ Plugin for AWS Power State
 	'desired_capacity': 8.0,
 	'max_size': 10.0,
 	'min_size': 8.0
-	...
+	'instances': [{'availability_zone': 'ap-northeast-1c',
+                       'health_status': 'Healthy',
+                       'instance_id': 'i-0004606c1e4386ff8',
+                       'instance_type': 't2.nano',
+                       'launch_template': {'launch_template_id': 'lt-00f3ed190ed130592',
+                                           'launch_template_name': 'power-scheduler-test-by-choonho',
+                                           'version': '1'},
+                       'lifecycle_state': 'InService',
+                       'protected_from_scale_in': False}, ...
+	]
 	},
 
 ~~~
