@@ -9,6 +9,7 @@ from spaceone.inventory.libs.connector import AWSConnector
 _LOGGER = logging.getLogger(__name__)
 MAX_WORKER = 20
 SUPPORTED_RESOURCE_TYPE = ['inventory.Server', 'inventory.CloudService', 'inventory.CloudServiceType', 'inventory.Region']
+SUPPORTED_FEATURES = ['garbage_collection']
 DEFAULT_REGION = 'us-east-1'
 FILTER_FORMAT = []
 
@@ -30,7 +31,8 @@ class CollectorService(BaseService):
         """
         capability = {
             'filter_format': FILTER_FORMAT,
-            'supported_resource_type': SUPPORTED_RESOURCE_TYPE
+            'supported_resource_type': SUPPORTED_RESOURCE_TYPE,
+            'supported_features': SUPPORTED_FEATURES
         }
         return {'metadata': capability}
 
