@@ -83,7 +83,7 @@ class EC2Manager(AWSPowerStateManager):
         sys_status = self._get_status(instance_statuses['SystemStatus'])
         if ins_status == 'passed' and sys_status == 'passed':
             return 'RUNNING'
-        elif instance_status == 'initializing' or sys_status == 'initializing':
+        elif ins_status == 'initializing' or sys_status == 'initializing':
             return 'INITIALIZING'
         return 'UNHEALTHY'
 
