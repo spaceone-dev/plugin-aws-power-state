@@ -18,15 +18,15 @@ class RDSManager(AWSPowerStateManager):
             # print(f'[ RDS {region_name} ]')
             rds_conn.set_client(region_name)
 
-            resources.extend(self.get_rds_databases(rds_conn))
-            resources.extend(self.get_rds_instances(rds_conn))
+            resources.extend(self.get_rds_databases(region_name, rds_conn))
+            resources.extend(self.get_rds_instances(region_name, rds_conn))
 
         print(f' RDS Finished {time.time() - start_time} Seconds')
         return resources
 
-    def get_rds_databases(self, rds_conn):
+    def get_rds_databases(self, region_name, rds_conn):
         databases = []
-        for cluster in rds_conn.describe_db_clusters(Filters=self.get_rds_filter()):
+        for cluster in rds_conn.describe_db_clusters(Filters=self.get_rds_filter(region_name)):
             rds_cluster = {
                 'arn': cluster['DBClusterArn'],
                 'db_identifier': cluster['DBClusterIdentifier'],
@@ -43,7 +43,7 @@ class RDSManager(AWSPowerStateManager):
 
             databases.append(RDSDatabaseResponse({'resource': rds_resource}))
 
-        for instance in rds_conn.describe_db_instances(Filters=self.get_rds_filter()):
+        for instance in rds_conn.describe_db_instances(Filters=self.get_rds_filter(region_name)):
             if not instance.get('DBClusterIdentifier'):
                 rds_instance = {
                     'arn': instance['DBInstanceArn'],
@@ -63,9 +63,9 @@ class RDSManager(AWSPowerStateManager):
 
         return databases
 
-    def get_rds_instances(self, rds_conn):
+    def get_rds_instances(self, region_name, rds_conn):
         instances = []
-        for instance in rds_conn.describe_db_instances(Filters=self.get_rds_filter()):
+        for instance in rds_conn.describe_db_instances(Filters=self.get_rds_filter(region_name)):
             rds = {
                 'arn': instance['DBInstanceArn'],
                 'db_identifier': instance['DBInstanceIdentifier'],
@@ -85,12 +85,19 @@ class RDSManager(AWSPowerStateManager):
         return instances
 
     @staticmethod
-    def get_rds_filter():
-        RDS_FILTER = ['aurora', 'aurora-mysql', 'mysql', 'mariadb', 'postgres',
-                      'oracle-ee', 'oracle-se', 'oracle-se1', 'oracle-se2',
-                      'sqlserver-ex', 'sqlserver-web', 'sqlserver-se', 'sqlserver-ee']
+    def get_rds_filter(region_name):
+        DEFAULT_RDS_FILTER = ['aurora', 'aurora-mysql', 'mysql', 'mariadb', 'postgres',
+                              'oracle-ee', 'oracle-se', 'oracle-se1', 'oracle-se2',
+                              'sqlserver-ex', 'sqlserver-web', 'sqlserver-se', 'sqlserver-ee']
+
+        EXCLUDE_FILTER = {'ap-south-1': ['oracle-se', 'oracle-se1']}
+
+        if EXCLUDE_FILTER.get(region_name):
+            filter_values = [rds_filter for rds_filter in DEFAULT_RDS_FILTER if rds_filter not in EXCLUDE_FILTER.get(region_name)]
+        else:
+            filter_values = DEFAULT_RDS_FILTER
 
         return [{
             'Name': 'engine',
-            'Values': RDS_FILTER
+            'Values': filter_values
         }]
