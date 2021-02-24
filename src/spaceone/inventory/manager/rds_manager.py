@@ -87,7 +87,7 @@ class RDSManager(AWSPowerStateManager):
     @staticmethod
     def get_rds_filter(region_name):
         DEFAULT_RDS_FILTER = ['aurora', 'aurora-mysql', 'mysql', 'mariadb', 'postgres',
-                              'oracle-ee', 'oracle-se', 'oracle-se1', 'oracle-se2',
+                              #'oracle-ee', 'oracle-se', 'oracle-se1', 'oracle-se2',
                               'sqlserver-ex', 'sqlserver-web', 'sqlserver-se', 'sqlserver-ee']
 
         EXCLUDE_FILTER = {'ap-south-1': ['oracle-se', 'oracle-se1']}
