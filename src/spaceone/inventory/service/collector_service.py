@@ -85,8 +85,11 @@ class CollectorService(BaseService):
                 future_executors.append(executor.submit(_manager.collect_resources, params))
 
             for future in concurrent.futures.as_completed(future_executors):
-                for resource in future.result():
-                    yield resource.to_primitive()
+                try:
+                    for resource in future.result():
+                        yield resource.to_primitive()
+                except Exception as e:
+                    _LOGGER.error(f'failed to result {e}')
 
         print(f'TOTAL TIME : {time.time() - start_time} Seconds')
 

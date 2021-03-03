@@ -77,14 +77,14 @@ class EC2Manager(AWSPowerStateManager):
 
     def _get_power_status(self, instance_statuses):
         """ Based on InstanceStatus,
-        possible: RUNNING | UNHEALTHY | INITIALIZING
+        possible: RUNING | STOPPED | UNHEALTHY | IN_PROGRESS
         """
         ins_status = self._get_status(instance_statuses['InstanceStatus'])
         sys_status = self._get_status(instance_statuses['SystemStatus'])
         if ins_status == 'passed' and sys_status == 'passed':
             return 'RUNNING'
         elif ins_status == 'initializing' or sys_status == 'initializing':
-            return 'INITIALIZING'
+            return 'IN_PROGRESS'
         return 'UNHEALTHY'
 
     @staticmethod
