@@ -12,7 +12,7 @@ Plugin for AWS Power State
 ~~~
 "data": {
 	"power_state": {
-		"status": "RUNNING"
+		"status": "RUNING" | "STOPPED" | "UNHEALTHY" | "IN_PROGRESS"
 	},
 
 	....
