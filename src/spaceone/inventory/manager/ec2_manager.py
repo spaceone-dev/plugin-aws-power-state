@@ -46,7 +46,10 @@ class EC2Manager(AWSPowerStateManager):
                 resources.append(EC2Response({'resource': ec2_resource}))
 
             # STOPPED instance is not listed at describe_instance_status
-            instances = ec2_conn.describe_instances(Filters=[{'Name': 'instance-state-name', 'Values': ['stopped']}])
+            # stopping -> stopped
+            # pending -> running
+            # assume penning has no instance status
+            instances = ec2_conn.describe_instances(Filters=[{'Name': 'instance-state-name', 'Values': ['stopping', 'stopped', 'pending']}])
             for instance in instances:
                 instance_data = {}
                 instance_data.update({
