@@ -41,6 +41,7 @@ Plugin for AWS Power State
                                            'launch_template_name': 'power-scheduler-test-by-choonho',
                                            'version': '1'},
                        'lifecycle_state': 'InService',
+                       'lifecycle': 'spot' | 'schedule', 
                        'protected_from_scale_in': False}, ...
 	]
 	},
