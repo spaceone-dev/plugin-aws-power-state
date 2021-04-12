@@ -23,9 +23,10 @@ class EC2Connector(AWSConnector):
 
         return instances_status
 
-    def describe_instances(self, **query):
+    def describe_instances(self, is_paginate=True, **query):
         instances = []
-        query = self.generate_query(is_paginate=True, **query)
+
+        query = self.generate_query(is_paginate=is_paginate, **query)
         paginator = self.client.get_paginator('describe_instances')
         response_iterator = paginator.paginate(**query)
 

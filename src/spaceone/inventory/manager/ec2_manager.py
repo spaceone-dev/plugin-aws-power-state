@@ -5,7 +5,6 @@ from spaceone.inventory.connector.ec2 import EC2Connector
 from spaceone.inventory.model.ec2 import *
 
 
-
 class EC2Manager(AWSPowerStateManager):
     connector_name = 'EC2Connector'
 
